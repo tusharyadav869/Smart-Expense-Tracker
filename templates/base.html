@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav>
+        <div class="logo">💰 Expense Tracker</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/add">Add Expense</a>
+            <a href="/about">About</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT - each page fills this -->
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>
