@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+from analytics import get_summary, get_category_chart, get_monthly_chart
 
 app = Flask(__name__)
 
@@ -115,6 +116,18 @@ def edit(id):
     conn.close()
     
     return render_template('edit.html', expense = expense)
+
+# ANALYTICS PAGE
+@app.route('/analytics')
+def analytics():
+    summary = get_summary()
+    pie_chart = get_category_chart()
+    bar_chart = get_monthly_chart()
+    return render_template('analytics.html',
+                           summary=summary,
+                           pie_chart=pie_chart,
+                           bar_chart=bar_chart
+                           )
 
 if __name__ == '__main__':
     app.run(debug=True)

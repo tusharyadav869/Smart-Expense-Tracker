@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>📊 Analytics Dashboard</h1>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <h3>Total Spending</h3>
+            <p class="big-number">₹{{ summary.total }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>Total Expenses</h3>
+            <p class="big-number">{{ summary.count }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>Average Expense</h3>
+            <p class="big-number">₹{{ summary.average }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>Highest Expense</h3>
+            <p class="big-number">₹{{ summary.highest }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>Lowest Expense</h3>
+            <p class="big-number">₹{{ summary.lowest }}</p>
+        </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-section">
+
+        {% if pie_chart %}
+        <div class="chart-container">
+            <img src="data:image/png;base64,{{ pie_chart }}" alt="Category Chart">
+        </div>
+        {% endif %}
+
+        {% if bar_chart %}
+        <div class="chart-container">
+            <img src="data:image/png;base64,{{ bar_chart }}" alt="Monthly Chart">
+        </div>
+        {% endif %}
+
+        {% if not pie_chart and not bar_chart %}
+        <p style="color: #888; margin-top: 20px;">
+            No data to show charts. 
+            <a href="/add">Add some expenses first!</a>
+        </p>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
