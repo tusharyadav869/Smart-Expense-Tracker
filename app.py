@@ -27,11 +27,36 @@ init_db()
 @app.route('/')
 def home():
     conn = get_db_connection()
-    expenses = conn.execute(
-        'SELECT * FROM expenses ORDER BY date DESC'
-    ).fetchall()
+
+    category = request.args.get('category')
+    date_from = request.args.get('date_from')
+    date_to = request.args.get('date_to')
+
+    query = 'SELECT * FROM expenses WHERE 1=1'
+    params = []
+
+    if category:
+        query += ' AND category = ?'
+        params.append(category)
+    
+    if date_from:
+        query += ' AND date >= ?'
+        params.append(date_from)
+
+    if date_to:
+        query += ' AND date <= ?'
+        params.append(date_to)
+
+    query += ' ORDER BY date DESC'
+
+
+    expenses = conn.execute(query, params).fetchall()
     conn.close()
-    return render_template('index.html', expenses=expenses)
+
+    return render_template('index.html', expenses=expenses,
+                           category=category,
+                           date_from=date_from,
+                           date_to=date_to)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():

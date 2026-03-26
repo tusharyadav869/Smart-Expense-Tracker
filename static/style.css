@@ -194,3 +194,65 @@ h2 {
     background-color: #3498db;
     color: white;
 }
+/* FILTER FORM */
+.filter-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-item {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+.filter-item select,
+.filter-item input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-buttons button {
+    margin-top: 0;
+    padding: 8px 20px;
+    width: auto;
+}
+
+.reset-btn {
+    padding: 8px 20px;
+    background-color: #95a5a6;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.reset-btn:hover {
+    background-color: #7f8c8d;
+}
