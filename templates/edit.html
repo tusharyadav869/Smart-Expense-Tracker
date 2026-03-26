@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Edit Expense</h1>
+
+    <form method="POST" action="/edit/{{ expense['id'] }}">
+        
+        <label for="amount">Amount (₹):</label>
+        <input type="number" id="amount" name="amount" 
+               value="{{ expense['amount'] }}" required>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="Food" {% if expense['category'] == 'Food' %}selected{% endif %}>🍔 Food</option>
+            <option value="Transport" {% if expense['category'] == 'Transport' %}selected{% endif %}>🚗 Transport</option>
+            <option value="Shopping" {% if expense['category'] == 'Shopping' %}selected{% endif %}>🛍️ Shopping</option>
+            <option value="Entertainment" {% if expense['category'] == 'Entertainment' %}selected{% endif %}>🎬 Entertainment</option>
+            <option value="Bills" {% if expense['category'] == 'Bills' %}selected{% endif %}>💡 Bills</option>
+            <option value="Other" {% if expense['category'] == 'Other' %}selected{% endif %}>📦 Other</option>
+        </select>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" 
+               value="{{ expense['description'] }}" >
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" 
+               value="{{ expense['date'] }}" required>
+
+        <button type="submit">Save Changes</button>
+    </form>
+{% endblock %}

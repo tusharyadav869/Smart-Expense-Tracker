@@ -65,5 +65,31 @@ def delete(id):
     conn.close()
     return redirect(url_for('home'))
 
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    conn = get_db_connection()
+
+    if request.method =='POST':
+        amount = request.form['amount']
+        category = request.form['category']
+        description = request.form['description']
+        date = request.form['date']
+
+        conn.execute('''
+            UPDATE expenses
+            SET amount = ?, category = ?, description = ?, date = ?
+            WHERE id = ? 
+        ''', (amount, category, description, date, id))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('home'))
+    expense = conn.execute(
+        'SELECT * FROM expenses WHERE id = ?', (id,)
+    ).fetchone()
+    conn.close()
+    
+    return render_template('edit.html', expense = expense)
+
 if __name__ == '__main__':
     app.run(debug=True)
