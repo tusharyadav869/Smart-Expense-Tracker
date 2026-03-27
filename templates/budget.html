@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>💰 Set Monthly Budget</h1>
+
+    <form method="POST" action="/budget">
+        <label for="budget">Monthly Budget (₹):</label>
+        <input type="number" id="budget" name="budget"
+               placeholder="Enter your monthly budget"
+               value="{{ current_budget['budget'] if current_budget else '' }}"
+               required>
+
+        <button type="submit">Save Budget</button>
+    </form>
+
+    {% if current_budget %}
+    <div class="current-budget-info">
+        <p>Your current budget is: <strong>₹{{ current_budget['budget'] }}</strong></p>
+        <p>You can update it anytime by entering a new amount above.</p>
+    </div>
+    {% endif %}
+
+{% endblock %}

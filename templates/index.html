@@ -19,6 +19,63 @@
         </div>
     </div>
 
+        <!-- BUDGET SECTION -->
+    {% if budget %}
+    <div class="budget-section" style="margin-top: 30px;">
+        <h2>💰 Budget Tracker ({{ current_month }})</h2>
+        <div class="budget-card">
+            <div class="budget-info">
+                <div class="budget-item">
+                    <span class="budget-label">Monthly Budget</span>
+                    <span class="budget-value">₹{{ budget }}</span>
+                </div>
+                <div class="budget-item">
+                    <span class="budget-label">Spent So Far</span>
+                    <span class="budget-value">₹{{ month_spent }}</span>
+                </div>
+                <div class="budget-item">
+                    <span class="budget-label">Remaining</span>
+                    <span class="budget-value {% if budget - month_spent < 0 %}over-budget{% endif %}">
+                        ₹{{ (budget - month_spent)|round(2) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="progress-container">
+                <div class="progress-bar 
+                    {% if budget_percentage > 100 %}progress-danger
+                    {% elif budget_percentage > 80 %}progress-warning
+                    {% else %}progress-safe{% endif %}"
+                    style="width: {% if budget_percentage > 100 %}100{% else %}{{ budget_percentage }}{% endif %}%">
+                    {{ budget_percentage }}%
+                </div>
+            </div>
+
+            <!-- WARNING MESSAGES -->
+            {% if budget_percentage > 100 %}
+                <p class="budget-alert danger">
+                    🚨 You've OVERSPENT your budget by ₹{{ (month_spent - budget)|round(2) }}!
+                </p>
+            {% elif budget_percentage > 80 %}
+                <p class="budget-alert warning">
+                    ⚠️ Warning: You've used {{ budget_percentage }}% of your budget!
+                </p>
+            {% elif budget_percentage > 50 %}
+                <p class="budget-alert info">
+                    ℹ️ You've used {{ budget_percentage }}% of your budget.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="budget-section" style="margin-top: 30px;">
+        <div class="no-budget">
+            <p>No budget set. <a href="/budget">Set your monthly budget</a> to track spending!</p>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- FILTER SECTION -->
     <h2 style="margin-top: 40px;">Filter Expenses</h2>
 

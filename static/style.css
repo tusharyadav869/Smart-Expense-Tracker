@@ -387,3 +387,112 @@ h2 {
     color: #2ecc71;
     font-weight: bold;
 }
+
+/* BUDGET SECTION */
+.budget-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+.budget-info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.budget-item {
+    text-align: center;
+}
+
+.budget-label {
+    display: block;
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.budget-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.over-budget {
+    color: #e74c3c;
+}
+
+/* PROGRESS BAR */
+.progress-container {
+    background: #ecf0f1;
+    border-radius: 10px;
+    height: 30px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    transition: width 0.5s ease;
+}
+
+.progress-safe {
+    background: #2ecc71;
+}
+
+.progress-warning {
+    background: #f39c12;
+}
+
+.progress-danger {
+    background: #e74c3c;
+}
+
+/* BUDGET ALERTS */
+.budget-alert {
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.budget-alert.danger {
+    background: #fff5f5;
+    color: #e74c3c;
+}
+
+.budget-alert.warning {
+    background: #fff8e1;
+    color: #f39c12;
+}
+
+.budget-alert.info {
+    background: #e3f2fd;
+    color: #3498db;
+}
+
+.no-budget {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.current-budget-info {
+    background: #f0fff4;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    color: #2ecc71;
+}

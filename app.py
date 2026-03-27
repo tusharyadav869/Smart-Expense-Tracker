@@ -10,15 +10,22 @@ def get_db_connection():
     conn = sqlite3.connect('expenses.db')
     conn.row_factory = sqlite3.Row
     return conn
+
 def init_db():
     conn = get_db_connection()
     conn.execute('''
-        CREATE TABLE IF NOT EXISTS expenses(
+        CREATE TABLE IF NOT EXISTS expenses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             amount REAL NOT NULL,
             category TEXT NOT NULL,
             description TEXT,
             date TEXT NOT NULL
+        )
+    ''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS settings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            budget REAL NOT NULL
         )
     ''')
     conn.commit()
@@ -30,17 +37,19 @@ init_db()
 def home():
     conn = get_db_connection()
 
+    # Get filter values from URL
     category = request.args.get('category')
     date_from = request.args.get('date_from')
     date_to = request.args.get('date_to')
 
+    # Start building the SQL query
     query = 'SELECT * FROM expenses WHERE 1=1'
     params = []
 
     if category:
         query += ' AND category = ?'
         params.append(category)
-    
+
     if date_from:
         query += ' AND date >= ?'
         params.append(date_from)
@@ -51,14 +60,40 @@ def home():
 
     query += ' ORDER BY date DESC'
 
-
     expenses = conn.execute(query, params).fetchall()
+
+    # Get budget info
+    import datetime
+    current_month = datetime.datetime.now().strftime('%Y-%m')
+
+    budget_row = conn.execute('SELECT * FROM settings').fetchone()
+    budget = budget_row['budget'] if budget_row else None
+
+    # Calculate current month spending
+    month_expenses = conn.execute(
+        "SELECT SUM(amount) as total FROM expenses WHERE date LIKE ?",
+        (current_month + '%',)
+    ).fetchone()
+
+    month_spent = month_expenses['total'] if month_expenses['total'] else 0
+
+    # Calculate budget percentage
+    if budget and budget > 0:
+        budget_percentage = round((month_spent / budget) * 100, 1)
+    else:
+        budget_percentage = 0
+
     conn.close()
 
-    return render_template('index.html', expenses=expenses,
+    return render_template('index.html',
+                           expenses=expenses,
                            category=category,
                            date_from=date_from,
-                           date_to=date_to)
+                           date_to=date_to,
+                           budget=budget,
+                           month_spent=month_spent,
+                           budget_percentage=budget_percentage,
+                           current_month=current_month)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
@@ -137,6 +172,35 @@ def predictions():
     return render_template('predictions.html',
                            result=result,
                            anomalies=anomalies)
+
+# SET BUDGET PAGE
+@app.route('/budget', methods=['GET', 'POST'])
+def budget():
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+        budget_amount = request.form['budget']
+
+        # Check if budget already exists
+        existing = conn.execute('SELECT * FROM settings').fetchone()
+
+        if existing:
+            # Update existing budget
+            conn.execute('UPDATE settings SET budget = ? WHERE id = ?',
+                         (budget_amount, existing['id']))
+        else:
+            # Insert new budget
+            conn.execute('INSERT INTO settings (budget) VALUES (?)',
+                         (budget_amount,))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('home'))
+
+    # GET request - show current budget
+    current_budget = conn.execute('SELECT * FROM settings').fetchone()
+    conn.close()
+    return render_template('budget.html', current_budget=current_budget)
 
 if __name__ == '__main__':
     app.run(debug=True)
