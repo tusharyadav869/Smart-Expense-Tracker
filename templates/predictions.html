@@ -16,7 +16,8 @@
 
     <div class="prediction-details">
         <h3>Based on Your Past Spending:</h3>
-        <table>
+        <div class="table-wrapper">
+            <table>
             <thead>
                 <tr>
                     <th>Month</th>
@@ -32,6 +33,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
 
     {% else %}
