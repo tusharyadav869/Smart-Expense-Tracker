@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 from analytics import get_summary, get_category_chart, get_monthly_chart
 from ml_model import predict_spending, detect_anomalies
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-123'
 
 def get_db_connection():
     """Connect to the database and return connection"""
@@ -111,6 +112,7 @@ def add():
         conn.commit()
         conn.close()
 
+        flash('Expense added successfully! ✅')
         return redirect(url_for('home'))
 
     return render_template('add.html')
@@ -125,6 +127,7 @@ def delete(id):
     conn.execute('DELETE FROM expenses WHERE id = ?', (id,))
     conn.commit()
     conn.close()
+    flash('Expense deleted! 🗑️')
     return redirect(url_for('home'))
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -145,6 +148,7 @@ def edit(id):
         conn.commit()
         conn.close()
 
+        flash('Expense updated successfully! ✏️')
         return redirect(url_for('home'))
     expense = conn.execute(
         'SELECT * FROM expenses WHERE id = ?', (id,)
@@ -195,6 +199,7 @@ def budget():
 
         conn.commit()
         conn.close()
+        flash('Budget updated successfully! 💰')
         return redirect(url_for('home'))
 
     # GET request - show current budget

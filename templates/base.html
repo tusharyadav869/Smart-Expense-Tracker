@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
     <title>Smart Expense Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -10,22 +11,41 @@
 
     <!-- NAVIGATION BAR -->
     <nav>
-        <div class="logo">💰 Expense Tracker</div>
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/add">Add Expense</a>
-            <a href="/analytics">Analytics</a>
-            <a href="/predictions">Predictions</a>
-            <a href="/budget">Budget</a>
-            <a href="/about">About</a>
+        <div class="nav-container">
+            <a href="/" class="logo">💰 ExpenseTracker</a>
+            <div class="nav-links">
+                <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/add" class="{% if request.path == '/add' %}active{% endif %}">Add Expense</a>
+                <a href="/analytics" class="{% if request.path == '/analytics' %}active{% endif %}">Analytics</a>
+                <a href="/predictions" class="{% if request.path == '/predictions' %}active{% endif %}">Predictions</a>
+                <a href="/budget" class="{% if request.path == '/budget' %}active{% endif %}">Budget</a>
+                <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">About</a>
+            </div>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT - each page fills this -->
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- MAIN CONTENT -->
     <div class="container">
         {% block content %}
         {% endblock %}
     </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Smart Expense Tracker | Built with Python, Flask & ML</p>
+        <p>© 2026 | <a href="https://github.com/tusharyadav869/Smart-Expense-Tracker" target="_blank">GitHub</a></p>
+    </footer>
 
 </body>
 </html>

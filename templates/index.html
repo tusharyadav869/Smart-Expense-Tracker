@@ -19,7 +19,7 @@
         </div>
     </div>
 
-        <!-- BUDGET SECTION -->
+    <!-- BUDGET SECTION -->
     {% if budget %}
     <div class="budget-section" style="margin-top: 30px;">
         <h2>💰 Budget Tracker ({{ current_month }})</h2>
@@ -41,7 +41,6 @@
                 </div>
             </div>
 
-            <!-- PROGRESS BAR -->
             <div class="progress-container">
                 <div class="progress-bar 
                     {% if budget_percentage > 100 %}progress-danger
@@ -52,7 +51,6 @@
                 </div>
             </div>
 
-            <!-- WARNING MESSAGES -->
             {% if budget_percentage > 100 %}
                 <p class="budget-alert danger">
                     🚨 You've OVERSPENT your budget by ₹{{ (month_spent - budget)|round(2) }}!
@@ -80,7 +78,6 @@
     <h2 style="margin-top: 40px;">Filter Expenses</h2>
 
     <form method="GET" action="/" class="filter-form">
-
         <div class="filter-row">
             <div class="filter-item">
                 <label for="category">Category:</label>
@@ -112,7 +109,6 @@
                 <a href="/" class="reset-btn">Reset</a>
             </div>
         </div>
-
     </form>
 
     <!-- SHOW ALL EXPENSES -->
@@ -125,36 +121,38 @@
     </h2>
 
     {% if expenses %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for expense in expenses %}
-                <tr>
-                    <td>{{ expense['date'] }}</td>
-                    <td>{{ expense['category'] }}</td>
-                    <td>{{ expense['description'] }}</td>
-                    <td>₹{{ expense['amount'] }}</td>
-                    <td>
-                        <a href="/edit/{{ expense['id'] }}" class="edit-btn">
-                            ✏️ Edit
-                        </a>
-                        <a href="/delete/{{ expense['id'] }}" class="delete-btn" 
-                           onclick="return confirm('Are you sure you want to delete this expense?')">
-                            🗑️ Delete
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense['date'] }}</td>
+                        <td>{{ expense['category'] }}</td>
+                        <td>{{ expense['description'] }}</td>
+                        <td>₹{{ expense['amount'] }}</td>
+                        <td>
+                            <a href="/edit/{{ expense['id'] }}" class="edit-btn">
+                                ✏️ Edit
+                            </a>
+                            <a href="/delete/{{ expense['id'] }}" class="delete-btn" 
+                               onclick="return confirm('Are you sure you want to delete this expense?')">
+                                🗑️ Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
         <p style="margin-top: 15px; color: #888;">
             No expenses found.
