@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>🤖 ML Predictions</h1>
+
+<!-- PREDICTION SECTION -->
+<div class="prediction-section">
+    <h2>Spending Prediction</h2>
+
+    {% if result.status == 'success' %}
+    <div class="prediction-card">
+        <h3>Predicted Spending for Next Month</h3>
+        <p class="prediction-amount">₹{{ result.prediction }}</p>
+        <p class="prediction-accuracy">Model Accuracy: {{ result.score }}%</p>
+    </div>
+
+    <div class="prediction-details">
+        <h3>Based on Your Past Spending:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(result.month_names | length) %}
+                <tr>
+                    <td>{{ result.month_names[i] }}</td>
+                    <td>₹{{ result.month_amounts[i] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="prediction-error">
+        <p>{{ result.message }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ANOMALY SECTION -->
+<div class="anomaly-section">
+    <h2 style="margin-top: 40px;">⚠️ Unusual Spending Alerts</h2>
+
+    {% if anomalies %}
+    {% for alert in anomalies %}
+    <div class="anomaly-card">
+        <p class="anomaly-message">{{ alert.message }}</p>
+        <p class="anomaly-detail">{{ alert.detail }}</p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="no-anomaly">
+        <p>✅ No unusual spending detected. You're spending normally!</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

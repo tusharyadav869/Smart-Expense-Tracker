@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 from analytics import get_summary, get_category_chart, get_monthly_chart
+from ml_model import predict_spending, detect_anomalies
 
 app = Flask(__name__)
 
@@ -128,6 +129,14 @@ def analytics():
                            pie_chart=pie_chart,
                            bar_chart=bar_chart
                            )
+
+@app.route('/predictions')
+def predictions():
+    result = predict_spending()
+    anomalies = detect_anomalies()
+    return render_template('predictions.html',
+                           result=result,
+                           anomalies=anomalies)
 
 if __name__ == '__main__':
     app.run(debug=True)
