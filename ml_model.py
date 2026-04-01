@@ -82,23 +82,43 @@ def detect_anomalies():
     categories = df['category'].unique()
 
     for cat in categories:
-        cat_data = df[df['category'] == cat]['amount']
+        cat_expenses = df[df['category'] == cat]
+        cat_amounts = cat_expenses['amount']
 
-        if len(cat_data) < 3:
+        if len(cat_amounts) < 3:
             continue
 
-        mean = cat_data.mean()
-        std = cat_data.std()
+        # Use MEDIAN instead of MEAN
+        # Median is not affected by outliers
+        median = cat_amounts.median()
+        
+        # Use IQR (Interquartile Range) method
+        q1 = cat_amounts.quantile(0.25)
+        q3 = cat_amounts.quantile(0.75)
+        iqr = q3 - q1
 
-        if std == 0:
-            continue
+        # If IQR is 0 (all same values), use median-based threshold
+        if iqr == 0:
+            upper_limit = median * 3
+        else:
+            upper_limit = q3 + 1.5 * iqr
 
-        for index, row in df[df['category'] == cat].iterrows():
+        # Also flag if expense is more than 3x the median
+        simple_limit = median * 3
+
+        # Use the LOWER of the two thresholds (catches more anomalies)
+        threshold = min(upper_limit, simple_limit)
+
+        # Make sure threshold is reasonable
+        if threshold <= 0:
+            threshold = median * 3
+
+        for index, row in cat_expenses.iterrows():
             amount = row['amount']
-            if amount > mean + 2 * std:
+            if amount > threshold:
                 alerts.append({
                     'type': 'single',
-                    'message': f"₹{amount} on {cat} is unusually HIGH (your average {cat} expense is ₹{round(mean, 2)})",
+                    'message': f"₹{amount} on {cat} is unusually HIGH (your typical {cat} expense is around ₹{round(median, 2)})",
                     'detail': f"{row['description']} | {row['date']}"
                 })
 
@@ -110,22 +130,35 @@ def detect_anomalies():
     monthly = df.groupby('month')['amount'].sum()
 
     if len(monthly) >= 3:
-        mean_monthly = monthly.mean()
-        std_monthly = monthly.std()
+        median_monthly = monthly.median()
+        
+        q1 = monthly.quantile(0.25)
+        q3 = monthly.quantile(0.75)
+        iqr = q3 - q1
 
-        if std_monthly > 0:
-            for month, total in monthly.items():
-                if total > mean_monthly + 1.5 * std_monthly:
-                    alerts.append({
-                        'type': 'monthly',
-                        'message': f"Month {month}: ₹{total} is unusually HIGH (your average monthly spending is ₹{round(mean_monthly, 2)})",
-                        'detail': f"This is ₹{round(total - mean_monthly, 2)} more than your average month"
-                    })
-                elif total < mean_monthly - 1.5 * std_monthly:
-                    alerts.append({
-                        'type': 'monthly',
-                        'message': f"Month {month}: ₹{total} is unusually LOW (your average monthly spending is ₹{round(mean_monthly, 2)})",
-                        'detail': f"This is ₹{round(mean_monthly - total, 2)} less than your average month"
-                    })
+        if iqr == 0:
+            upper_limit = median_monthly * 2
+            lower_limit = median_monthly * 0.3
+        else:
+            upper_limit = q3 + 1.5 * iqr
+            lower_limit = q1 - 1.5 * iqr
+
+        # Also use simple 2x median check
+        simple_upper = median_monthly * 2
+        upper_threshold = min(upper_limit, simple_upper)
+
+        for month, total in monthly.items():
+            if total > upper_threshold:
+                alerts.append({
+                    'type': 'monthly',
+                    'message': f"Month {month}: ₹{total} is unusually HIGH (your typical monthly spending is around ₹{round(median_monthly, 2)})",
+                    'detail': f"This is ₹{round(total - median_monthly, 2)} more than your typical month"
+                })
+            elif iqr > 0 and total < lower_limit:
+                alerts.append({
+                    'type': 'monthly',
+                    'message': f"Month {month}: ₹{total} is unusually LOW (your typical monthly spending is around ₹{round(median_monthly, 2)})",
+                    'detail': f"This is ₹{round(median_monthly - total, 2)} less than your typical month"
+                })
 
     return alerts
