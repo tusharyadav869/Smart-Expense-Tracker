@@ -52,7 +52,7 @@ Make sure you have Python 3.11+ installed on your machine.
 ### Installation
 
 1. **Clone the repository**
-git clone https://github.com/YOUR_USERNAME/smart-expense-tracker.git
+git clone https://github.com/tusharyadav869/Smart-Expense-Tracker.git
 cd smart-expense-tracker
 
 2. Install the required dependencies
